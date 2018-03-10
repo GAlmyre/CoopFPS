@@ -18,7 +18,7 @@ public:
 	// Sets default values for this component's properties
 	UHealthComponent();
 
-	UPROPERTY(Replicated, BlueprintReadOnly, Category = "HealthComponent")
+	UPROPERTY(ReplicatedUsing=OnRep_Health, BlueprintReadOnly, Category = "HealthComponent")
 	float Health;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HealthComponent")
@@ -26,6 +26,15 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnHealthChangedSignature OnHealthChanged;
+
+	UFUNCTION()
+	void OnRep_Health(float OldHealth);
+
+	UFUNCTION(BlueprintCallable, Category = "Healthcomponent")
+	void Heal(float HealAmount);
+
+	float GetHealth() const;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;

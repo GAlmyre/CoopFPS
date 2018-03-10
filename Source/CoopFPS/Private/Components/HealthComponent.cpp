@@ -12,6 +12,33 @@ UHealthComponent::UHealthComponent()
 }
 
 
+void UHealthComponent::OnRep_Health(float OldHealth)
+{
+	float Damage = Health - OldHealth;
+
+	OnHealthChanged.Broadcast(this, Health, Damage, nullptr, nullptr, nullptr);
+}
+
+void UHealthComponent::Heal(float HealAmount)
+{
+	// if we are dead, full health or the heal is null
+	if (HealAmount <= 0.0f || Health <= 0.0f)
+	{
+		return;
+	}
+
+	Health = FMath::Clamp(Health + HealAmount, 0.0f, DefaultHealth);
+
+	UE_LOG(LogTemp, Log, TEXT("Health changed : %s (+%s)"), *FString::SanitizeFloat(Health), *FString::SanitizeFloat(HealAmount));
+
+	OnHealthChanged.Broadcast(this, Health, -HealAmount, nullptr, nullptr, nullptr);
+}
+
+float UHealthComponent::GetHealth() const
+{
+	return Health;
+}
+
 // Called when the game starts
 void UHealthComponent::BeginPlay()
 {
